@@ -1,0 +1,15 @@
+should = require 'should'
+
+getProductDetail = require '../lib/getProductDetail'
+
+
+describe 'getProductDetail(...)', ->
+  it 'should be done', (done) ->
+    getProductDetail
+      url: 'http://www.amazon.com/Skip-Hop-Stroller-Organizer-Black/dp/B00APIN8H4/ref=sr_1_1?s=baby-products&ie=UTF8&qid=1385964606&sr=1-1&keywords=879674012059'
+    ,
+      (err, productDetail) ->
+        should.not.exist err
+        should.exist productDetail
+
+        done()

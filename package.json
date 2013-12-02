@@ -1,6 +1,6 @@
 {
   "name": "amazon-products",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A node.js module to crawl product IDs from Amazon.",
   "main": "index.js",
   "dependencies": {
@@ -17,7 +17,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --compilers coffee:coffee-script --globals lw --recursive ./test -t 10000"
+    "test": "mocha --compilers coffee:coffee-script --globals lw --recursive ./test -t 0"
   },
   "repository": {
     "type": "git",

@@ -26,6 +26,15 @@ AmazonProducts.getProductIds({
 ```
 **INFO**: If the product list page has the next page link then all next pages will be reflected automatically until the next button is not appeared.
 
+### Get product details
+```javascript
+AmazonProducts.getProductDetail({
+  url: 'PRODUCT_DETAIL_PAGE_URL'
+}, function(err, productDetail) {
+  ...
+});
+```
+
 ## License
 
 Released under the MIT License
