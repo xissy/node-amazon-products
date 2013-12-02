@@ -1,4 +1,5 @@
 urlModule = require 'url'
+querystring = require 'querystring'
 
 Page = require './Page'
 
@@ -23,15 +24,38 @@ class ProductDetailPage extends Page
       shippingMessage = shippingMessage[2..]  if shippingMessage[0...2] is '& '
       shippingMessage = shippingMessage[0...-8]  if shippingMessage[-8..-1] is ' Details'
 
-      technicalDetails = {}
-      $('#prodDetails .container .content table tr').each ->
-        tdTags = @.find('td')
-        key = tdTags.eq(0).text().replace /^\s+|\s+$/g, ''
-        value = tdTags.eq(1).text().replace /^\s+|\s+$/g, ''
-        return  if key is '' or value is ''
+      details = {}
+      if $('#detail-bullets_feature_div').length > 0
+        # http://www.amazon.com/Huggies-Simply-Clean-Fragrance-Refill/dp/B007HO4W74/ref=zg_bs_166776011_3
+        $('#detail-bullets_feature_div #detail-bullets table .content li').each ->
+          key = @.children('b').eq(0).text().replace(/^\s+|\s+$/g, '')[0..-2]
+          value = @.text().replace(/\n/g, '').replace(/^\s+|\s+$/g, '')[key.length+2..].replace(/\(.*\)/g, '').replace(/^\s+|\s+$/g, '')
+          return  if key is '' or value is ''
+          return  if key in [ 'Average Customer Review', 'Amazon Best Sellers Rank' ]
+          
+          value = Number value  if key not in [ 'UPC' ] and "#{Number value}" is value
+          details[key] = value
 
-        value = Number value  if "#{Number value}" is value
-        technicalDetails[key] = value
+        tellFriendUrl = $('#tell-a-friend').attr('data-dest')
+        details.parentASIN = querystring.parse(urlModule.parse(tellFriendUrl)?.query)?.parentASIN
+        details.averageCustomerReviewCount = Number $('#detail-bullets_feature_div #detail-bullets table .content li .crAvgStars > a').text().replace /[^0-9\.]+/g, ''
+        details.averageCustomerReviewRating = Number $('#detail-bullets_feature_div #detail-bullets table .content li .crAvgStars .swSprite span').text().replace(/[^0-9\.]+/g, '')[0..-2]
+      else
+        # http://www.amazon.com/Skip-Hop-Stroller-Organizer-Black/dp/B00APIN8H4/ref=sr_1_1?s=baby-products&ie=UTF8&qid=1385964606&sr=1-1&keywords=879674012059
+        $('#prodDetails .column .content table tr').each ->
+          tdTags = @.find('td')
+          key = tdTags.eq(0).text().replace /^\s+|\s+$/g, ''
+          value = tdTags.eq(1).text().replace(/\(.*\)/g, '').replace /^\s+|\s+$/g, ''
+          return  if key is '' or value is ''
+          return  if key in [ 'Customer Reviews', 'Best Sellers Rank' ]
+
+          value = Number value  if key not in [ 'UPC' ] and "#{Number value}" is value
+          details[key] = value
+
+        tellFriendUrl = $('#tell-a-friend').attr('data-dest')
+        details.parentASIN = querystring.parse(urlModule.parse(tellFriendUrl)?.query)?.parentASIN
+        details.averageCustomerReviewCount = Number $('#averageCustomerReviewCount').text().replace /[^0-9\.]+/g, ''
+        details.averageCustomerReviewRating = Number $('#averageCustomerReviewRating').text().replace(/[^0-9\.]+/g, '')[0..-2]
 
       productDetail =
         name: $('#title').text().replace /^\s+|\s+$/g, ''
@@ -39,7 +63,7 @@ class ProductDetailPage extends Page
         salePrice: $('#priceblock_ourprice').text().replace /[^0-9\.]+/g, ''
         shippingMessage: shippingMessage
         availability: $('#availability').text().replace /^\s+|\s+$/g, ''
-        technicalDetails: technicalDetails
+        details: details
       
       callback null, productDetail
 
