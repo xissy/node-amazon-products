@@ -57,12 +57,19 @@ class ProductDetailPage extends Page
         details.averageCustomerReviewCount = Number $('#averageCustomerReviewCount').text().replace /[^0-9\.]+/g, ''
         details.averageCustomerReviewRating = Number $('#averageCustomerReviewRating').text().replace(/[^0-9\.]+/g, '')[0..-2]
 
+      features = []
+      $('#featurebullets_feature_div #feature-bullets ul li').each ->
+        splitedFeatures = @.text().split ';'
+        for feature in splitedFeatures
+          features.push feature.replace /^\s+|\s+$/g, ''
+
       productDetail =
         name: $('#title').text().replace /^\s+|\s+$/g, ''
         brand: $('#brand').text().replace /^\s+|\s+$/g, ''
         salePrice: $('#priceblock_ourprice').text().replace /[^0-9\.]+/g, ''
         shippingMessage: shippingMessage
         availability: $('#availability').text().replace /^\s+|\s+$/g, ''
+        features: features
         details: details
       
       callback null, productDetail
