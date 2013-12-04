@@ -40,6 +40,15 @@ class ProductDetailPage extends Page
         details.parentASIN = querystring.parse(urlModule.parse(tellFriendUrl)?.query)?.parentASIN
         details.averageCustomerReviewCount = Number $('#detail-bullets_feature_div #detail-bullets table .content li .crAvgStars > a').text().replace /[^0-9\.]+/g, ''
         details.averageCustomerReviewRating = Number $('#detail-bullets_feature_div #detail-bullets table .content li .crAvgStars .swSprite span').text().replace(/[^0-9\.]+/g, '')[0..-2]
+
+        categories = []
+        $('.zg_hrsr_ladder').each ->
+          categoryTree = []
+          @.find('a').each ->
+            categoryTree.push @.text()
+          categories.push categoryTree
+
+        details.categories = categories
       else
         # http://www.amazon.com/Skip-Hop-Stroller-Organizer-Black/dp/B00APIN8H4/ref=sr_1_1?s=baby-products&ie=UTF8&qid=1385964606&sr=1-1&keywords=879674012059
         $('#prodDetails .column .content table tr').each ->
@@ -56,6 +65,15 @@ class ProductDetailPage extends Page
         details.parentASIN = querystring.parse(urlModule.parse(tellFriendUrl)?.query)?.parentASIN
         details.averageCustomerReviewCount = Number $('#averageCustomerReviewCount').text().replace /[^0-9\.]+/g, ''
         details.averageCustomerReviewRating = Number $('#averageCustomerReviewRating').text().replace(/[^0-9\.]+/g, '')[0..-2]
+
+        categories = []
+        $('.zg_hrsr_ladder').each ->
+          categoryTree = []
+          @.find('a').each ->
+            categoryTree.push @.text()
+          categories.push categoryTree
+
+        details.categories = categories
 
       features = []
       $('#featurebullets_feature_div #feature-bullets ul li').each ->
