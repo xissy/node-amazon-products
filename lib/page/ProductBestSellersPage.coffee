@@ -31,12 +31,12 @@ class ProductBestSellersPage extends Page
       products = []
       $('.zg_itemImmersion').each ->
         products.push
-          name: @.find('.zg_title').text().replace /^\s+|\s+$/g, ''
-          url: @.find('.zg_title a').attr('href').replace /^\s+|\s+$/g, ''
+          name: @.find('.zg_title').text()?.replace /^\s+|\s+$/g, ''
+          url: @.find('.zg_title a').attr('href')?.replace /^\s+|\s+$/g, ''
           imageUrl: @.find('.zg_image .zg_itemImageImmersion a img').attr 'src'
-          salePrice: @.find('.zg_price .price').text().replace /[^0-9\.]+/g, ''
+          salePrice: Number @.find('.zg_price .price').text().replace /[^0-9\.]+/g, ''
           details:
-            ASIN: @.find('.zg_reviews .crAvgStars .asinReviewsSummary').attr 'name'
+            ASIN: @.find('.zg_title a').attr('href')?.replace(/^\s+|\s+$/g, '').split('/')[5]
             averageCustomerReviewCount: Number @.find('.zg_reviews .crAvgStars > a').text().replace /[^0-9\.]+/g, ''
             averageCustomerReviewRating: Number @.find('.zg_reviews .crAvgStars span a .swSprite').text().replace(/[^0-9\.]+/g, '')[0..-2]
 
