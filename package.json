@@ -1,13 +1,14 @@
 {
   "name": "amazon-products",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A node.js module to crawl product IDs from Amazon.",
   "main": "index.js",
   "dependencies": {
     "coffee-script": "~1.6.3",
     "async": "~0.1.22",
     "request": "~2.16.6",
-    "cheerio": "~0.10.5"
+    "cheerio": "~0.10.5",
+    "lodash": "~2.4.1"
   },
   "devDependencies": {
     "should": "~1.0.0",

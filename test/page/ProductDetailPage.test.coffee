@@ -14,4 +14,14 @@ describe 'ProductDetailPage', ->
           should.exist productDetail
 
           done()
+
+    it 'should be done', (done) ->
+      productDetailPage = new ProductDetailPage
+        url: 'http://www.amazon.com/Huggies-Simply-Clean-Fragrance-Refill/dp/B007HO4W74/ref=zg_bs_166776011_3'
+      ,
+        (err, productDetail) ->
+          should.not.exist err
+          should.exist productDetail
+
+          done()
           
