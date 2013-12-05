@@ -7,7 +7,7 @@ describe 'ProductBestSellersPage', ->
   describe 'constructor(...)', ->
     it 'should be done', (done) ->
       productBestSellersPage = new ProductBestSellersPage
-        categoryId: '370094011'
+        browseNodeId: '370094011'
         pageNo: 0
         sectionNo: 0
       ,
@@ -20,7 +20,7 @@ describe 'ProductBestSellersPage', ->
 
   it 'should be done', (done) ->
     productBestSellersPage = new ProductBestSellersPage
-      categoryId: '370094011'
+      browseNodeId: '370094011'
       pageNo: 0
       sectionNo: 1
     ,

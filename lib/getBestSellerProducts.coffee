@@ -5,7 +5,7 @@ ProductBestSellersPage = require './page/ProductBestSellersPage'
 
 #### retrieve best seller products.
 module.exports = (options, callback) ->
-  return callback new Error 'no options.categoryId'  if not options?.categoryId?
+  return callback new Error 'no options.browseNodeId'  if not options?.browseNodeId?
 
   pageNos = [0...5]
   sectionNos = [0...2]
@@ -17,7 +17,7 @@ module.exports = (options, callback) ->
       ,
         (sectionNo, callback) ->
           productBestSellersPage = ProductBestSellersPage
-            categoryId: options.categoryId
+            browseNodeId: options.browseNodeId
             pageNo: pageNo
             sectionNo: sectionNo
           ,

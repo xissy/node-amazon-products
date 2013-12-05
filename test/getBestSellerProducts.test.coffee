@@ -6,7 +6,7 @@ getBestSellerProducts = require '../lib/getBestSellerProducts'
 describe 'getBestSellerProducts(...)', ->
   it 'should be done', (done) ->
     getBestSellerProducts
-      categoryId: '370094011'
+      browseNodeId: '370094011'
     ,
       (err, products) ->
         should.not.exist err

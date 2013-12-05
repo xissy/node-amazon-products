@@ -14,7 +14,7 @@ class ProductBestSellersPage extends Page
 
 
   constructor: (@options, callback) ->
-    return callback new Error 'invalid categoryId'  if not @options.categoryId?
+    return callback new Error 'invalid browseNodeId'  if not @options.browseNodeId?
     return callback new Error 'invalid pageNo'  if not @options.pageNo?
     return callback new Error 'invalid sectionNo'  if not @options.sectionNo?
 
@@ -22,7 +22,7 @@ class ProductBestSellersPage extends Page
     switch @options.type
       when 'topRated' then typeParam = 'top-rated'
 
-    @options.url = "http://www.amazon.com/gp/#{typeParam}/baby-products/#{@options.categoryId}/ref=?_encoding=UTF8&pg=#{@options.pageNo + 1}&ajax=1"
+    @options.url = "http://www.amazon.com/gp/#{typeParam}/baby-products/#{@options.browseNodeId}/ref=?_encoding=UTF8&pg=#{@options.pageNo + 1}&ajax=1"
     @options.url += '&isAboveTheFold=0'  if @options.sectionNo > 0
 
     super @options, (err, $) ->
