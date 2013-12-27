@@ -27,8 +27,9 @@ class Page
       if response?.statusCode isnt 200
         return callback new Error "#{response.statusCode} - #{body}"
 
-      @$ = cheerio.load body
-      callback null, @$
+      @body = body
+      @$ = cheerio.load @body
+      callback null, @$, @body
 
 
 

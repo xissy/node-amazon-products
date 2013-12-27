@@ -25,7 +25,7 @@ class ProductBestSellersPage extends Page
     @options.url = "http://www.amazon.com/gp/#{typeParam}/baby-products/#{@options.browseNodeId}/ref=?_encoding=UTF8&pg=#{@options.pageNo + 1}&ajax=1"
     @options.url += '&isAboveTheFold=0'  if @options.sectionNo > 0
 
-    super @options, (err, $) ->
+    super @options, (err, $, body) ->
       return callback err  if err?
 
       products = []

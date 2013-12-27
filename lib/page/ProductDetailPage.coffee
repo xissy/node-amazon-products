@@ -1,6 +1,9 @@
 _ = require 'lodash'
 urlModule = require 'url'
 querystring = require 'querystring'
+async = require 'async'
+request = require 'request'
+cheerio = require 'cheerio'
 
 Page = require './Page'
 
@@ -18,7 +21,7 @@ class ProductDetailPage extends Page
 
 
   constructor: (@options, callback) ->
-    super @options, (err, $) ->
+    super @options, (err, $, body) ->
       return callback err  if err?
 
       shippingMessage = $('#ourprice_shippingmessage').text().replace /^\s+|\s+$/g, ''
@@ -36,6 +39,9 @@ class ProductDetailPage extends Page
           
           value = Number value  if key not in [ 'UPC' ] and "#{Number value}" is value
           details[key] = value
+
+        details.UPCs = details.UPC?.split(' ')
+        details.UPC = details.UPCs[0]  if details.UPCs?.length > 1
 
         tellFriendUrl = $('#tell-a-friend').attr 'data-dest'
         details.parentASIN = querystring.parse(urlModule.parse(tellFriendUrl)?.query)?.parentASIN  if tellFriendUrl?
@@ -67,6 +73,9 @@ class ProductDetailPage extends Page
           value = Number value  if key not in [ 'UPC' ] and "#{Number value}" is value
           details[key] = value
 
+        details.UPCs = details.UPC?.split(' ')
+        details.UPC = details.UPCs[0]  if details.UPCs?.length > 1
+
         tellFriendUrl = $('#tell-a-friend').attr 'data-dest'
         details.parentASIN = querystring.parse(urlModule.parse(tellFriendUrl)?.query)?.parentASIN  if tellFriendUrl?
         details.averageCustomerReviewCount = Number $('#averageCustomerReviewCount').text().replace /[^0-9\.]+/g, ''
@@ -92,16 +101,47 @@ class ProductDetailPage extends Page
         for feature in splitedFeatures
           features.push feature.replace /^\s+|\s+$/g, ''
 
-      productDetail =
-        name: $('#title').text().replace /^\s+|\s+$/g, ''
-        brand: $('#brand').text().replace /^\s+|\s+$/g, ''
-        salePrice: $('#priceblock_ourprice').text().replace /[^0-9\.]+/g, ''
-        shippingMessage: shippingMessage
-        availability: $('#availability').text().replace /^\s+|\s+$/g, ''
-        features: features
-        details: details
-      
-      callback null, productDetail
+      imageUrls = []
+      $('#altImages .item img').each (index, element) ->
+        imageUrl = @.attr('src')
+        return  if not imageUrl? or imageUrl?.search(/video/) > -1
+
+        imageUrl = imageUrl.replace /._SS40_/, ''
+        imageUrls.push imageUrl
+
+      videoIds = []
+      videoStrings = body.match /\"isVideo\":1,\"mediaObjectId\":(.*?)",/g
+      if videoStrings?
+        for videoString in videoStrings
+          videoStringTokens = videoString.split '\"'
+          videoIds.push videoStringTokens?[5]  if videoStringTokens?[5]?
+
+      async.map videoIds
+      ,
+        (videoId, callback) ->
+          request
+            url: "http://www.amazon.com/gp/mpd/getplaylist-v2/#{videoId}/"
+          ,
+            (err, videoResp, videoXml) ->
+              videoDoc = cheerio.load videoXml
+              videos = videoDoc('video').attr 'src'
+              callback err, videos
+      ,
+        (err, videoUrls) ->
+          videoUrls = []  if not videoUrls?
+
+          productDetail =
+            name: $('#title').text().replace /^\s+|\s+$/g, ''
+            brand: $('#brand').text().replace /^\s+|\s+$/g, ''
+            salePrice: $('#priceblock_ourprice').text().replace /[^0-9\.]+/g, ''
+            shippingMessage: shippingMessage
+            availability: $('#availability').text().replace /^\s+|\s+$/g, ''
+            features: features
+            details: details
+            imageUrls: imageUrls
+            videoUrls: videoUrls
+          
+          callback null, productDetail
 
 
 
