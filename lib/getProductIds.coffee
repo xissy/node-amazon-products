@@ -18,6 +18,7 @@ module.exports = (options, callback) ->
     (callback) ->
       productListPage = new ProductListPage
         url: currentUrl
+        headers: options.headers
       ,
         (err) ->
           return callback err  if err?

@@ -20,6 +20,7 @@ module.exports = (options, callback) ->
             browseNodeId: options.browseNodeId
             pageNo: pageNo
             sectionNo: sectionNo
+            headers: options.headers
           ,
             callback
       ,
